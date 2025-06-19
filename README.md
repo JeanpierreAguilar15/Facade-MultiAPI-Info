@@ -37,6 +37,7 @@ print(info.pais.poblacion)
 - ✅ **Interfaz Unificada**: Una sola clase para todo
 - ✅ **Manejo de Errores**: Centralizado y consistente
 - ✅ **Configuración Flexible**: Variables de entorno para API keys
+- 🌐 **Aplicación Web**: Interfaz moderna con Flask para demostrar el patrón
 
 ## 🚀 Instalación
 
@@ -69,6 +70,13 @@ facade.mostrar_resumen(info)
 python ejemplos/demo_completo.py
 ```
 
+### Aplicación Web (¡NUEVO! 🌐)
+```bash
+pip install flask flask-cors
+python web_app.py
+# Abrir: http://localhost:5000
+```
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -88,9 +96,12 @@ Facade-MultiAPI-Info/
 ├── ejemplos/
 │   ├── demo_completo.py              # 🎮 Demo principal
 │   └── demo_individual.py            # 🔧 Test de cada proveedor
+├── templates/
+│   └── index.html                    # 🌐 Interfaz web moderna
 ├── tests/
 │   └── test_facade.py                # 🧪 Tests unitarios
-├── .env.example                      # 📝 Ejemplo de configuración
+├── web_app.py                        # 🌐 Aplicación Flask
+├── inicio_rapido.py                  # 🚀 Demo rápido
 ├── requirements.txt                  # 📦 Dependencias
 └── README.md                         # 📚 Documentación
 ```
