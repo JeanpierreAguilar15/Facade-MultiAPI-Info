@@ -3,288 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏛️ Patrón Facade - Sistema Multi-API</title>
+    <title>Patrón Facade - Multi API</title>
     
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <style>
         :root {
-            --primary-color: #6f42c1;
-            --secondary-color: #20c997;
-            --accent-color: #fd7e14;
-            --dark-color: #212529;
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
         }
-        
+
         .main-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            margin: 20px auto;
-            padding: 30px;
-        }
-        
-        .facade-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
             border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary-color);
             color: white;
+            padding: 2rem;
+            text-align: center;
         }
-        
-        .api-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+
+        .header h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .search-section {
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .search-card {
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
         }
-        
-        .api-card:hover {
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
-        .clima-card { border-left: 5px solid #17a2b8; }
-        .noticias-card { border-left: 5px solid #ffc107; }
-        .pais-card { border-left: 5px solid #28a745; }
-        
-        .loading-spinner {
+
+        .result-header {
+            padding: 1rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-header.clima { background: var(--accent-color); }
+        .result-header.noticias { background: var(--warning-color); }
+        .result-header.pais { background: var(--success-color); }
+        .result-header.facade { background: var(--secondary-color); }
+
+        .result-content {
+            padding: 1.5rem;
+        }
+
+        .status-section {
+            background: var(--light-bg);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-online { color: var(--success-color); }
+        .status-offline { color: var(--danger-color); }
+
+        .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 2rem;
         }
-        
-        .status-indicator {
-            width: 12px;
-            height: 12px;
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
+            animation: spin 1s linear infinite;
         }
-        
-        .status-online { background-color: #28a745; }
-        .status-offline { background-color: #dc3545; }
-        
-        .facade-explanation {
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border-left: 5px solid var(--primary-color);
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+
+        .error-message {
+            background: #fee;
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+
+        .footer {
+            background: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            opacity: 0.8;
         }
-        
-        .error-alert {
-            border-radius: 10px;
-            border: none;
-        }
-        
-        .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-        }
-        
-        .comparison-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
+
         @media (max-width: 768px) {
-            .comparison-section {
-                grid-template-columns: 1fr;
-            }
+            .header h1 { font-size: 2rem; }
+            .search-section { padding: 2rem 1rem; }
+            .results-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="main-container">
-            <!-- Header -->
-            <div class="facade-header animate__animated animate__fadeInDown">
-                <h1><i class="fas fa-building"></i> Patrón Facade</h1>
-                <p class="mb-0">Sistema Multi-API con Interfaz Unificada</p>
-                <small>Demuestra cómo una fachada simplifica el acceso a múltiples subsistemas complejos</small>
-            </div>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-layer-group"></i> Patrón Facade</h1>
+            <p>Acceso unificado a múltiples APIs de información</p>
+        </div>
 
-            <!-- Explicación del Patrón -->
-            <div class="facade-explanation animate__animated animate__fadeInUp">
-                <h3><i class="fas fa-lightbulb text-warning"></i> ¿Qué es el Patrón Facade?</h3>
-                <p><strong>Facade</strong> proporciona una interfaz simplificada para acceder a un conjunto complejo de subsistemas. En lugar de que el cliente tenga que conocer y manejar múltiples APIs diferentes, la fachada ofrece una sola interfaz unificada.</p>
-                
-                <div class="comparison-section">
-                    <div>
-                        <h5 class="text-danger"><i class="fas fa-times"></i> Sin Facade (Complejo)</h5>
-                        <div class="code-block">
-clima_provider = ClimaProvider()
-noticias_provider = NoticiasProvider()
-pais_provider = PaisProvider()
-
-# 3 llamadas separadas
-clima = clima_provider.obtener_clima("Madrid")
-noticias = noticias_provider.obtener_noticias("Madrid", "España")
-pais = pais_provider.obtener_info_pais("Spain")
-
-# Manejar errores de cada una...
-                        </div>
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-card">
+                <h3 class="mb-3">Consultar Información</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="paisSelect" class="form-label">Seleccionar País</label>
+                        <select class="form-select" id="paisSelect" onchange="actualizarCiudades()">
+                            <option value="">Selecciona un país...</option>
+                        </select>
                     </div>
-                    <div>
-                        <h5 class="text-success"><i class="fas fa-check"></i> Con Facade (Simple)</h5>
-                        <div class="code-block">
-facade = FachadaInformacionCiudad()
-
-# ¡Una sola llamada para todo!
-info = facade.obtener_informacion_completa("Madrid")
-
-# Resultado unificado y estructurado
-print(info.clima.temperatura)
-print(info.noticias[0].titulo)
-print(info.pais.nombre_comun)
-                        </div>
+                    <div class="col-md-6">
+                        <label for="ciudadSelect" class="form-label">Seleccionar Ciudad</label>
+                        <select class="form-select" id="ciudadSelect" disabled>
+                            <option value="">Primero selecciona un país</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary btn-lg" onclick="consultarInformacion()" disabled id="consultarBtn">
+                            <i class="fas fa-search"></i> Consultar Información
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" onclick="verificarEstado()">
+                            <i class="fas fa-heartbeat"></i> Estado APIs
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Formulario de consulta -->
-            <div class="row mb-4">
-                <div class="col-md-8 mx-auto">
-                    <div class="card api-card">
-                        <div class="card-body text-center">
-                            <h4><i class="fas fa-search text-primary"></i> Consultar Ciudad</h4>
-                            <p class="text-muted">Usa el patrón Facade para obtener información completa</p>
-                            
-                            <div class="input-group mb-3">
-                                <input type="text" id="ciudadInput" class="form-control form-control-lg" 
-                                       placeholder="Ej: Madrid, Barcelona, México..." 
-                                       onkeypress="if(event.key==='Enter') consultarCiudad()">
-                                <button class="btn btn-primary" type="button" onclick="consultarCiudad()">
-                                    <i class="fas fa-search"></i> Consultar
-                                </button>
-                            </div>
-                            
-                            <div class="loading-spinner" id="loadingSpinner">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Consultando...</span>
-                                </div>
-                                <p class="mt-2">🏛️ Facade coordinando múltiples APIs...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner mx-auto mb-3"></div>
+                <p>Consultando APIs mediante el patrón Facade...</p>
             </div>
 
-            <!-- Resultados -->
-            <div id="resultados" style="display: none;">
-                <div class="row">
+            <!-- Results -->
+            <div id="results" style="display: none;">
+                <div class="results-grid">
                     <!-- Clima -->
-                    <div class="col-md-4">
-                        <div class="card api-card clima-card animate__animated animate__fadeInLeft">
-                            <div class="card-header bg-info text-white">
-                                <h5><i class="fas fa-cloud-sun"></i> Clima</h5>
-                                <small>OpenWeatherMap API</small>
-                            </div>
-                            <div class="card-body" id="climaContent">
-                                <!-- Contenido dinámico -->
-                            </div>
+                    <div class="result-card">
+                        <div class="result-header clima">
+                            <i class="fas fa-cloud-sun"></i>
+                            <span>Clima - Open-Meteo</span>
+                        </div>
+                        <div class="result-content" id="climaContent">
+                            <!-- Contenido dinámico -->
                         </div>
                     </div>
 
                     <!-- Noticias -->
-                    <div class="col-md-4">
-                        <div class="card api-card noticias-card animate__animated animate__fadeInUp">
-                            <div class="card-header bg-warning text-dark">
-                                <h5><i class="fas fa-newspaper"></i> Noticias</h5>
-                                <small>NewsAPI</small>
-                            </div>
-                            <div class="card-body" id="noticiasContent">
-                                <!-- Contenido dinámico -->
-                            </div>
+                    <div class="result-card">
+                        <div class="result-header noticias">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Noticias - Hacker News</span>
+                        </div>
+                        <div class="result-content" id="noticiasContent">
+                            <!-- Contenido dinámico -->
                         </div>
                     </div>
 
                     <!-- País -->
-                    <div class="col-md-4">
-                        <div class="card api-card pais-card animate__animated animate__fadeInRight">
-                            <div class="card-header bg-success text-white">
-                                <h5><i class="fas fa-globe"></i> País</h5>
-                                <small>REST Countries API</small>
-                            </div>
-                            <div class="card-body" id="paisContent">
-                                <!-- Contenido dinámico -->
-                            </div>
+                    <div class="result-card">
+                        <div class="result-header pais">
+                            <i class="fas fa-globe"></i>
+                            <span>País - REST Countries</span>
+                        </div>
+                        <div class="result-content" id="paisContent">
+                            <!-- Contenido dinámico -->
                         </div>
                     </div>
-                </div>
 
-                <!-- Información del Facade -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card api-card">
-                            <div class="card-header bg-primary text-white">
-                                <h5><i class="fas fa-building"></i> Información del Facade</h5>
-                            </div>
-                            <div class="card-body" id="facadeInfo">
-                                <!-- Contenido dinámico -->
-                            </div>
+                    <!-- Facade Info -->
+                    <div class="result-card" style="grid-column: 1 / -1;">
+                        <div class="result-header facade">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Información del Facade</span>
+                        </div>
+                        <div class="result-content" id="facadeInfo">
+                            <!-- Contenido dinámico -->
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Estado de APIs -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card api-card">
-                        <div class="card-header bg-secondary text-white">
-                            <h5><i class="fas fa-heartbeat"></i> Estado de APIs</h5>
-                        </div>
-                        <div class="card-body" id="estadoApis">
-                            <div class="text-center">
-                                <button class="btn btn-outline-secondary" onclick="verificarEstadoApis()">
-                                    <i class="fas fa-sync"></i> Verificar Estado
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Status Section -->
+            <div class="status-section" style="display: none;" id="statusSection">
+                <h4 class="mb-3">Estado de las APIs</h4>
+                <div class="status-grid" id="statusGrid">
+                    <!-- Contenido dinámico -->
                 </div>
             </div>
+        </div>
 
-            <!-- Footer -->
-            <div class="text-center mt-4 text-muted">
-                <p><i class="fas fa-code"></i> Implementación del Patrón Facade con Flask</p>
-                <p><small>Demuestra acceso unificado a múltiples APIs con fallback inteligente</small></p>
-            </div>
+        <!-- Footer -->
+        <div class="footer">
+            <p><i class="fas fa-code"></i> Implementación del Patrón Facade | APIs completamente gratuitas</p>
         </div>
     </div>
 
@@ -292,36 +314,100 @@ print(info.pais.nombre_comun)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Variables globales
-        let datosActuales = null;
+        // Datos de países y ciudades
+        const paisesYCiudades = {
+            'España': ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Bilbao', 'Málaga'],
+            'Francia': ['París', 'Lyon', 'Marsella', 'Toulouse', 'Niza', 'Nantes'],
+            'Italia': ['Roma', 'Milán', 'Nápoles', 'Turín', 'Palermo', 'Génova'],
+            'Reino Unido': ['Londres', 'Manchester', 'Birmingham', 'Liverpool', 'Bristol', 'Leeds'],
+            'Alemania': ['Berlín', 'Múnich', 'Hamburgo', 'Colonia', 'Frankfurt', 'Stuttgart'],
+            'Estados Unidos': ['Nueva York', 'Los Ángeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia'],
+            'México': ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'León'],
+            'Argentina': ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza', 'La Plata', 'San Miguel de Tucumán'],
+            'Brasil': ['São Paulo', 'Río de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte'],
+            'Colombia': ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena', 'Cúcuta'],
+            'Perú': ['Lima', 'Arequipa', 'Trujillo', 'Chiclayo', 'Huancayo', 'Iquitos'],
+            'Chile': ['Santiago', 'Valparaíso', 'Concepción', 'La Serena', 'Antofagasta', 'Temuco'],
+            'Japón': ['Tokio', 'Osaka', 'Yokohama', 'Nagoya', 'Sapporo', 'Kobe'],
+            'China': ['Pekín', 'Shanghái', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Hangzhou'],
+            'India': ['Nueva Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata'],
+            'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast'],
+            'Canadá': ['Toronto', 'Montreal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa']
+        };
 
-        // Función principal que usa el Facade
-        async function consultarCiudad() {
-            const ciudad = document.getElementById('ciudadInput').value.trim();
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarPaises();
+            verificarEstado();
+        });
+
+        function cargarPaises() {
+            const paisSelect = document.getElementById('paisSelect');
+            Object.keys(paisesYCiudades).sort().forEach(pais => {
+                const option = document.createElement('option');
+                option.value = pais;
+                option.textContent = pais;
+                paisSelect.appendChild(option);
+            });
+        }
+
+        function actualizarCiudades() {
+            const paisSelect = document.getElementById('paisSelect');
+            const ciudadSelect = document.getElementById('ciudadSelect');
+            const consultarBtn = document.getElementById('consultarBtn');
+            
+            const paisSeleccionado = paisSelect.value;
+            
+            // Limpiar ciudades
+            ciudadSelect.innerHTML = '<option value="">Selecciona una ciudad...</option>';
+            
+            if (paisSeleccionado) {
+                ciudadSelect.disabled = false;
+                const ciudades = paisesYCiudades[paisSeleccionado];
+                ciudades.forEach(ciudad => {
+                    const option = document.createElement('option');
+                    option.value = ciudad;
+                    option.textContent = ciudad;
+                    ciudadSelect.appendChild(option);
+                });
+            } else {
+                ciudadSelect.disabled = true;
+                ciudadSelect.innerHTML = '<option value="">Primero selecciona un país</option>';
+            }
+            
+            // Actualizar botón
+            consultarBtn.disabled = !paisSeleccionado;
+        }
+
+        // Habilitar botón cuando se seleccione ciudad
+        document.getElementById('ciudadSelect').addEventListener('change', function() {
+            const consultarBtn = document.getElementById('consultarBtn');
+            consultarBtn.disabled = !this.value;
+        });
+
+        async function consultarInformacion() {
+            const ciudad = document.getElementById('ciudadSelect').value;
             
             if (!ciudad) {
-                alert('Por favor ingresa el nombre de una ciudad');
+                alert('Por favor selecciona una ciudad');
                 return;
             }
 
             // Mostrar loading
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('resultados').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('statusSection').style.display = 'none';
 
             try {
-                // 🏛️ LLAMADA AL FACADE - Una sola petición para todo
                 const response = await fetch('/api/consultar', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ciudad: ciudad })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    datosActuales = data;
                     mostrarResultados(data);
                 } else {
                     mostrarError(data.error);
@@ -329,68 +415,90 @@ print(info.pais.nombre_comun)
             } catch (error) {
                 mostrarError('Error de conexión: ' + error.message);
             } finally {
-                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
             }
         }
 
         function mostrarResultados(data) {
-            // Mostrar clima
+            // Clima
             const climaHtml = data.clima ? `
                 <div class="text-center">
-                    <h2 class="text-info">${data.clima.temperatura}°C</h2>
-                    <p class="mb-1"><strong>${data.clima.descripcion}</strong></p>
-                    <p class="text-muted">${data.clima.ciudad}, ${data.clima.pais}</p>
-                    <hr>
-                    <small>
-                        Sensación: ${data.clima.sensacion_termica}°C<br>
-                        Humedad: ${data.clima.humedad}%<br>
-                        ${data.clima.presion ? `Presión: ${data.clima.presion} hPa` : ''}
-                    </small>
+                    <h2 class="text-primary mb-2">${data.clima.temperatura}°C</h2>
+                    <p class="h5 mb-2">${data.clima.descripcion}</p>
+                    <p class="text-muted mb-3">${data.clima.ciudad}, ${data.clima.pais}</p>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <small class="text-muted">Sensación</small><br>
+                            <strong>${data.clima.sensacion_termica}°C</strong>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Humedad</small><br>
+                            <strong>${data.clima.humedad}%</strong>
+                        </div>
+                        <div class="col-4">
+                            <small class="text-muted">Presión</small><br>
+                            <strong>${data.clima.presion || 'N/A'} hPa</strong>
+                        </div>
+                    </div>
                 </div>
-            ` : '<div class="text-center text-muted"><i class="fas fa-exclamation-triangle"></i><br>No disponible</div>';
+            ` : '<div class="text-center text-muted">No disponible</div>';
 
-            // Mostrar noticias
+            // Noticias
             const noticiasHtml = data.noticias ? `
                 <div>
-                    <p class="mb-2"><strong>${data.noticias.total_resultados} noticias</strong></p>
+                    <p class="mb-3"><strong>${data.noticias.total_resultados} noticias disponibles</strong></p>
                     ${data.noticias.articulos.slice(0, 3).map(noticia => `
                         <div class="border-bottom pb-2 mb-2">
-                            <h6 class="mb-1">${noticia.titulo.substring(0, 60)}...</h6>
+                            <h6 class="mb-1">${noticia.titulo.substring(0, 80)}...</h6>
                             <small class="text-muted">${noticia.fuente}</small>
                         </div>
                     `).join('')}
+                    <small class="text-muted">Fuente: ${data.noticias.fuente_api}</small>
                 </div>
-            ` : '<div class="text-center text-muted"><i class="fas fa-exclamation-triangle"></i><br>No disponible</div>';
+            ` : '<div class="text-center text-muted">No disponible</div>';
 
-            // Mostrar país
+            // País
             const paisHtml = data.pais ? `
                 <div class="text-center">
-                    <h3>${data.pais.bandera_emoji}</h3>
-                    <h5>${data.pais.nombre_comun}</h5>
-                    <p class="text-muted">${data.pais.nombre_oficial}</p>
-                    <hr>
-                    <small>
-                        Capital: ${data.pais.capital.join(', ')}<br>
-                        Población: ${data.pais.poblacion.toLocaleString()}<br>
-                        Región: ${data.pais.region}<br>
-                        Idiomas: ${data.pais.idiomas.join(', ')}
-                    </small>
+                    <div class="mb-3" style="font-size: 3rem;">${data.pais.bandera_emoji}</div>
+                    <h5 class="mb-1">${data.pais.nombre_comun}</h5>
+                    <p class="text-muted mb-3">${data.pais.nombre_oficial}</p>
+                    <div class="row text-center small">
+                        <div class="col-6 mb-2">
+                            <strong>Capital:</strong><br>
+                            ${data.pais.capital.join(', ')}
+                        </div>
+                        <div class="col-6 mb-2">
+                            <strong>Población:</strong><br>
+                            ${data.pais.poblacion.toLocaleString()}
+                        </div>
+                        <div class="col-6">
+                            <strong>Región:</strong><br>
+                            ${data.pais.region}
+                        </div>
+                        <div class="col-6">
+                            <strong>Idiomas:</strong><br>
+                            ${data.pais.idiomas.join(', ')}
+                        </div>
+                    </div>
                 </div>
-            ` : '<div class="text-center text-muted"><i class="fas fa-exclamation-triangle"></i><br>No disponible</div>';
+            ` : '<div class="text-center text-muted">No disponible</div>';
 
-            // Información del Facade
+            // Facade Info
             const facadeHtml = `
                 <div class="row">
                     <div class="col-md-6">
-                        <h6><i class="fas fa-building text-primary"></i> Facade Utilizado</h6>
-                        <p><code>FachadaInformacionCiudad.obtener_informacion_completa("${data.ciudad}")</code></p>
-                        <p class="text-muted">Una sola llamada coordinó ${data.info_disponible.length} APIs diferentes</p>
+                        <h6 class="text-primary mb-2">Facade Utilizado</h6>
+                        <code class="d-block p-2 bg-light rounded mb-2">
+                            FachadaInformacionCiudad.obtener_informacion_completa("${data.ciudad}")
+                        </code>
+                        <p class="text-muted small">Una sola llamada coordinó ${data.info_disponible.length} APIs diferentes</p>
                     </div>
                     <div class="col-md-6">
-                        <h6><i class="fas fa-clock text-info"></i> Información</h6>
-                        <p>Consulta: ${data.timestamp}</p>
-                        <p>APIs consultadas: ${data.info_disponible.join(', ')}</p>
-                        ${data.errores.length > 0 ? `<p class="text-warning">Errores: ${data.errores.length}</p>` : ''}
+                        <h6 class="text-primary mb-2">Información de Consulta</h6>
+                        <p class="small mb-1"><strong>Timestamp:</strong> ${data.timestamp}</p>
+                        <p class="small mb-1"><strong>APIs consultadas:</strong> ${data.info_disponible.join(', ')}</p>
+                        ${data.errores.length > 0 ? `<p class="small text-warning mb-0"><strong>Errores:</strong> ${data.errores.length}</p>` : ''}
                     </div>
                 </div>
             `;
@@ -402,55 +510,60 @@ print(info.pais.nombre_comun)
             document.getElementById('facadeInfo').innerHTML = facadeHtml;
 
             // Mostrar resultados
-            document.getElementById('resultados').style.display = 'block';
+            document.getElementById('results').style.display = 'block';
         }
 
         function mostrarError(error) {
             const errorHtml = `
-                <div class="alert alert-danger error-alert" role="alert">
-                    <i class="fas fa-exclamation-triangle"></i>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
                     <strong>Error:</strong> ${error}
                 </div>
             `;
-            document.getElementById('resultados').innerHTML = errorHtml;
-            document.getElementById('resultados').style.display = 'block';
+            document.getElementById('results').innerHTML = errorHtml;
+            document.getElementById('results').style.display = 'block';
         }
 
-        async function verificarEstadoApis() {
+        async function verificarEstado() {
             try {
                 const response = await fetch('/api/diagnostico');
                 const data = await response.json();
 
                 if (data.success) {
-                    const estadoHtml = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Estado de APIs</h6>
-                                <p><span class="status-indicator ${data.estado_apis.clima ? 'status-online' : 'status-offline'}"></span>Clima (OpenWeatherMap)</p>
-                                <p><span class="status-indicator ${data.estado_apis.noticias ? 'status-online' : 'status-offline'}"></span>Noticias (NewsAPI)</p>
-                                <p><span class="status-indicator ${data.estado_apis.pais ? 'status-online' : 'status-offline'}"></span>Países (REST Countries)</p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Configuración</h6>
-                                <p>API Keys: ${data.configuracion.tiene_api_keys ? '✅ Configuradas' : '❌ No configuradas'}</p>
-                                <p>Datos simulados: ${data.configuracion.usa_mock_data ? '✅ Activados' : '❌ Desactivados'}</p>
-                                <p>Fallback: ${data.configuracion.fallback_habilitado ? '✅ Habilitado' : '❌ Deshabilitado'}</p>
-                            </div>
+                    const statusHtml = `
+                        <div class="status-item">
+                            <i class="fas fa-cloud-sun ${data.estado_apis.clima ? 'status-online' : 'status-offline'}"></i>
+                            <span>Open-Meteo (Clima): ${data.estado_apis.clima ? 'Online' : 'Offline'}</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-newspaper ${data.estado_apis.noticias ? 'status-online' : 'status-offline'}"></i>
+                            <span>Hacker News (Noticias): ${data.estado_apis.noticias ? 'Online' : 'Offline'}</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-globe ${data.estado_apis.pais ? 'status-online' : 'status-offline'}"></i>
+                            <span>REST Countries (País): ${data.estado_apis.pais ? 'Online' : 'Offline'}</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-key status-online"></i>
+                            <span>API Keys: No necesarias</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-shield-alt ${data.configuracion.fallback_habilitado ? 'status-online' : 'status-offline'}"></i>
+                            <span>Fallback: ${data.configuracion.fallback_habilitado ? 'Habilitado' : 'Deshabilitado'}</span>
+                        </div>
+                        <div class="status-item">
+                            <i class="fas fa-database ${data.configuracion.usa_mock_data ? 'status-offline' : 'status-online'}"></i>
+                            <span>Datos: ${data.configuracion.usa_mock_data ? 'Simulados' : 'Reales'}</span>
                         </div>
                     `;
-                    document.getElementById('estadoApis').innerHTML = estadoHtml;
+                    
+                    document.getElementById('statusGrid').innerHTML = statusHtml;
+                    document.getElementById('statusSection').style.display = 'block';
                 }
             } catch (error) {
-                document.getElementById('estadoApis').innerHTML = `
-                    <div class="alert alert-danger">Error al verificar estado: ${error.message}</div>
-                `;
+                console.error('Error al verificar estado:', error);
             }
         }
-
-        // Cargar estado inicial
-        document.addEventListener('DOMContentLoaded', function() {
-            verificarEstadoApis();
-        });
     </script>
 </body>
 </html> 
