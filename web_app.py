@@ -4,6 +4,11 @@ APLICACIÓN WEB - Patrón Facade
 
 Aplicación Flask que demuestra el patrón Facade mediante una interfaz web moderna.
 Permite consultar información de ciudades usando múltiples APIs de forma unificada.
+
+APIs utilizadas (todas gratuitas):
+- Open-Meteo: Información climática
+- FreeNewsAPI: Noticias actuales  
+- REST Countries: Información de países
 """
 import sys
 import os
@@ -82,7 +87,8 @@ def consultar_ciudad():
         if informacion.noticias:
             resultado['noticias'] = {
                 'total_resultados': informacion.noticias.total_resultados,
-                'pais_consultado': informacion.noticias.pais_consultado,
+                'pais': informacion.noticias.pais,
+                'fuente_api': informacion.noticias.fuente_api,
                 'articulos': []
             }
             
@@ -132,18 +138,22 @@ def diagnostico():
             'pais': facade.pais_provider.verificar_conexion()
         }
         
+        # Información de las APIs
+        info_apis = Config.get_status_apis()
+        
         # Configuración actual
         configuracion = {
-            'tiene_api_keys': Config.tiene_api_keys(),
             'usa_mock_data': Config.USE_MOCK_DATA,
             'idioma': Config.DEFAULT_LANGUAGE,
             'unidades': Config.DEFAULT_UNITS,
-            'fallback_habilitado': Config.ENABLE_FALLBACK
+            'fallback_habilitado': Config.ENABLE_FALLBACK,
+            'timeout': Config.REQUEST_TIMEOUT
         }
         
         return jsonify({
             'success': True,
             'estado_apis': estado_apis,
+            'info_apis': info_apis,
             'configuracion': configuracion
         })
         
@@ -169,12 +179,32 @@ def facade_info():
         'implementacion': {
             'facade_class': 'FachadaInformacionCiudad',
             'subsistemas': [
-                'ClimaProvider (OpenWeatherMap API)',
-                'NoticiasProvider (NewsAPI)',
-                'PaisProvider (REST Countries API)'
+                'ClimaProvider (Open-Meteo API - Gratuita)',
+                'NoticiasProvider (Hacker News API - Gratuita)',
+                'PaisProvider (REST Countries API - Gratuita)'
             ],
             'metodo_principal': 'obtener_informacion_completa()',
             'fallback': 'MockDataProvider (datos simulados)'
+        },
+        'apis_utilizadas': {
+            'clima': {
+                'nombre': 'Open-Meteo',
+                'descripcion': 'API meteorológica completamente gratuita',
+                'url': 'https://open-meteo.com/',
+                'caracteristicas': ['Sin registro', 'Sin API key', 'Sin límites estrictos']
+            },
+            'noticias': {
+                'nombre': 'Hacker News API',
+                'descripcion': 'API de noticias tecnológicas gratuita',
+                'url': 'https://hacker-news.firebaseio.com/',
+                'caracteristicas': ['Sin registro', 'Sin API key', 'Noticias tech']
+            },
+            'paises': {
+                'nombre': 'REST Countries',
+                'descripcion': 'API de información de países',
+                'url': 'https://restcountries.com/',
+                'caracteristicas': ['Completamente gratuita', 'Sin límites', 'Datos completos']
+            }
         },
         'ejemplo_uso': {
             'sin_facade': [
@@ -186,7 +216,7 @@ def facade_info():
             'con_facade': [
                 'facade = FachadaInformacionCiudad()',
                 'info = facade.obtener_informacion_completa("Madrid")',
-                '# ¡Una sola llamada para todo!'
+                '# Una sola llamada para todo!'
             ]
         }
     })
@@ -195,11 +225,12 @@ def facade_info():
 if __name__ == '__main__':
     print("Iniciando aplicación web del patrón Facade...")
     print("Accede a: http://localhost:5000")
-    print("Demostrando el patrón Facade con interfaz web moderna")
+    print("Demostrando el patrón Facade con APIs completamente gratuitas")
+    print()
+    print("APIs utilizadas:")
+    print("- Open-Meteo (clima): Completamente gratuita")
+    print("- Hacker News API (noticias): Completamente gratuita")
+    print("- REST Countries (países): Completamente gratuita")
     
     # Configurar para desarrollo
-    app.run(
-        debug=True,
-        host='0.0.0.0',
-        port=5000
-    ) 
+    app.run(debug=True, host='0.0.0.0', port=5000) 

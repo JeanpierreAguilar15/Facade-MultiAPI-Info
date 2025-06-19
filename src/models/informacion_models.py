@@ -20,7 +20,7 @@ class InformacionClima:
     visibilidad: Optional[int] = None
     
     def __str__(self):
-        return f"🌤️  {self.ciudad}: {self.temperatura}°C ({self.descripcion})"
+        return f"{self.ciudad}: {self.temperatura}°C ({self.descripcion})"
 
 
 @dataclass
@@ -34,7 +34,7 @@ class Noticia:
     imagen_url: Optional[str] = None
     
     def __str__(self):
-        return f"📰 {self.titulo[:50]}... - {self.fuente}"
+        return f"{self.titulo[:50]}... - {self.fuente}"
 
 
 @dataclass
@@ -42,10 +42,11 @@ class InformacionNoticias:
     """Modelo para colección de noticias"""
     noticias: List[Noticia]
     total_resultados: int
-    pais_consultado: str
+    pais: str
+    fuente_api: str = "Hacker News API"
     
     def __str__(self):
-        return f"📰 {self.total_resultados} noticias de {self.pais_consultado}"
+        return f"{self.total_resultados} noticias de {self.pais}"
 
 
 @dataclass
@@ -64,7 +65,7 @@ class InformacionPais:
     bandera_emoji: str
     
     def __str__(self):
-        return f"🌍 {self.nombre_comun} - {self.capital[0] if self.capital else 'N/A'}"
+        return f"{self.nombre_comun} - {self.capital[0] if self.capital else 'N/A'}"
 
 
 @dataclass
@@ -100,4 +101,4 @@ class InformacionCompleta:
     
     def __str__(self):
         info_tipos = ", ".join(self.informacion_disponible())
-        return f"📊 Información de {self.ciudad_consultada}: {info_tipos}" 
+        return f"Información de {self.ciudad_consultada}: {info_tipos}" 

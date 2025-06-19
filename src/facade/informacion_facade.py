@@ -23,23 +23,23 @@ class FachadaInformacionCiudad:
     FACADE - Interfaz unificada para obtener información completa de ciudades
     
     Esta clase encapsula la complejidad de trabajar con múltiples APIs:
-    - OpenWeatherMap (clima)
-    - NewsAPI (noticias)  
-    - REST Countries (información de países)
+    - Open-Meteo (clima) - Completamente gratuita
+    - FreeNewsAPI (noticias) - Completamente gratuita
+    - REST Countries (información de países) - Completamente gratuita
     
     El cliente solo necesita conocer esta clase, no los detalles de cada API.
     """
     
     def __init__(self):
         """Inicializa todos los proveedores internos"""
-        print(f"{Fore.CYAN}Inicializando Fachada de Información...{Style.RESET_ALL}")
+        print("Inicializando Fachada de Información...")
         
         # Crear instancias de todos los proveedores
         self.clima_provider = ClimaProvider()
         self.noticias_provider = NoticiasProvider()
         self.pais_provider = PaisProvider()
         
-        print(f"{Fore.GREEN}Fachada lista para usar{Style.RESET_ALL}")
+        print("Fachada lista para usar")
     
     def obtener_informacion_completa(self, ciudad: str) -> InformacionCompleta:
         """
@@ -54,7 +54,7 @@ class FachadaInformacionCiudad:
         Returns:
             InformacionCompleta: Objeto con toda la información agregada
         """
-        print(f"\n{Fore.YELLOW}Obteniendo información completa de: {ciudad}{Style.RESET_ALL}")
+        print(f"\nObteniendo información completa de: {ciudad}")
         print("=" * 60)
         
         # Crear objeto resultado
@@ -64,53 +64,53 @@ class FachadaInformacionCiudad:
         pais = self.pais_provider.obtener_pais_por_ciudad(ciudad)
         
         # 1. Obtener información climática
-        print(f"\n{Fore.BLUE}PASO 1: Obteniendo clima...{Style.RESET_ALL}")
+        print(f"\nPASO 1: Obteniendo clima...")
         try:
             resultado.clima = self.clima_provider.obtener_clima(ciudad)
             if resultado.clima:
-                print(f"{Fore.GREEN}Clima obtenido: {resultado.clima.temperatura}°C{Style.RESET_ALL}")
+                print(f"Clima obtenido: {resultado.clima.temperatura}°C")
             else:
                 resultado.errores.append("No se pudo obtener información climática")
-                print(f"{Fore.RED}Error obteniendo clima{Style.RESET_ALL}")
+                print("Error obteniendo clima")
         except Exception as e:
             resultado.errores.append(f"Error clima: {str(e)}")
-            print(f"{Fore.RED}Error clima: {str(e)}{Style.RESET_ALL}")
+            print(f"Error clima: {str(e)}")
         
         # 2. Obtener noticias
-        print(f"\n{Fore.BLUE}PASO 2: Obteniendo noticias...{Style.RESET_ALL}")
+        print(f"\nPASO 2: Obteniendo noticias...")
         try:
-            resultado.noticias = self.noticias_provider.obtener_noticias(ciudad, pais)
+            resultado.noticias = self.noticias_provider.obtener_noticias(pais)
             if resultado.noticias:
-                print(f"{Fore.GREEN}Noticias obtenidas: {len(resultado.noticias.noticias)} artículos{Style.RESET_ALL}")
+                print(f"Noticias obtenidas: {len(resultado.noticias.noticias)} artículos")
             else:
                 resultado.errores.append("No se pudieron obtener noticias")
-                print(f"{Fore.RED}Error obteniendo noticias{Style.RESET_ALL}")
+                print("Error obteniendo noticias")
         except Exception as e:
             resultado.errores.append(f"Error noticias: {str(e)}")
-            print(f"{Fore.RED}Error noticias: {str(e)}{Style.RESET_ALL}")
+            print(f"Error noticias: {str(e)}")
         
         # 3. Obtener información del país
-        print(f"\n{Fore.BLUE}PASO 3: Obteniendo información del país...{Style.RESET_ALL}")
+        print(f"\nPASO 3: Obteniendo información del país...")
         try:
             resultado.pais = self.pais_provider.obtener_info_pais(pais)
             if resultado.pais:
-                print(f"{Fore.GREEN}País obtenido: {resultado.pais.nombre_comun}{Style.RESET_ALL}")
+                print(f"País obtenido: {resultado.pais.nombre_comun}")
             else:
                 resultado.errores.append("No se pudo obtener información del país")
-                print(f"{Fore.RED}Error obteniendo información del país{Style.RESET_ALL}")
+                print("Error obteniendo información del país")
         except Exception as e:
             resultado.errores.append(f"Error país: {str(e)}")
-            print(f"{Fore.RED}Error país: {str(e)}{Style.RESET_ALL}")
+            print(f"Error país: {str(e)}")
         
         # Resumen final
-        print(f"\n{Fore.CYAN}RESUMEN:{Style.RESET_ALL}")
+        print(f"\nRESUMEN:")
         info_disponible = resultado.informacion_disponible()
         print(f"   Información obtenida: {', '.join(info_disponible) if info_disponible else 'Ninguna'}")
         
         if resultado.tiene_errores():
-            print(f"{Fore.YELLOW}Se encontraron {len(resultado.errores)} errores{Style.RESET_ALL}")
+            print(f"Se encontraron {len(resultado.errores)} errores")
         else:
-            print(f"{Fore.GREEN}¡Información completa obtenida exitosamente!{Style.RESET_ALL}")
+            print("¡Información completa obtenida exitosamente!")
         
         return resultado
     
@@ -121,13 +121,13 @@ class FachadaInformacionCiudad:
         Args:
             informacion: Objeto InformacionCompleta a mostrar
         """
-        print(f"\n{Fore.MAGENTA}{'='*80}{Style.RESET_ALL}")
-        print(f"{Fore.MAGENTA}RESUMEN COMPLETO - {informacion.ciudad_consultada.upper()}{Style.RESET_ALL}")
-        print(f"{Fore.MAGENTA}{'='*80}{Style.RESET_ALL}")
+        print(f"\n{'='*80}")
+        print(f"RESUMEN COMPLETO - {informacion.ciudad_consultada.upper()}")
+        print(f"{'='*80}")
         
         # Mostrar clima
         if informacion.clima:
-            print(f"\n{Fore.CYAN}CLIMA:{Style.RESET_ALL}")
+            print(f"\nCLIMA:")
             print(f"   Ciudad: {informacion.clima.ciudad}, {informacion.clima.pais}")
             print(f"   Temperatura: {informacion.clima.temperatura}°C (se siente como {informacion.clima.sensacion_termica}°C)")
             print(f"   Condición: {informacion.clima.descripcion}")
@@ -137,7 +137,7 @@ class FachadaInformacionCiudad:
         
         # Mostrar información del país
         if informacion.pais:
-            print(f"\n{Fore.GREEN}PAÍS:{Style.RESET_ALL}")
+            print(f"\nPAÍS:")
             print(f"   {informacion.pais.bandera_emoji} Nombre: {informacion.pais.nombre_comun}")
             print(f"   Nombre oficial: {informacion.pais.nombre_oficial}")
             print(f"   Capital: {', '.join(informacion.pais.capital)}")
@@ -148,9 +148,9 @@ class FachadaInformacionCiudad:
         
         # Mostrar noticias
         if informacion.noticias and informacion.noticias.noticias:
-            print(f"\n{Fore.YELLOW}NOTICIAS RECIENTES ({informacion.noticias.total_resultados}):{Style.RESET_ALL}")
+            print(f"\nNOTICIAS RECIENTES ({informacion.noticias.total_resultados}):")
             for i, noticia in enumerate(informacion.noticias.noticias[:3], 1):  # Mostrar solo las primeras 3
-                print(f"\n   {i}. {Fore.WHITE}{noticia.titulo}{Style.RESET_ALL}")
+                print(f"\n   {i}. {noticia.titulo}")
                 print(f"      Fuente: {noticia.fuente}")
                 if noticia.descripcion:
                     descripcion_corta = noticia.descripcion[:100] + "..." if len(noticia.descripcion) > 100 else noticia.descripcion
@@ -158,47 +158,44 @@ class FachadaInformacionCiudad:
         
         # Mostrar errores si los hay
         if informacion.tiene_errores():
-            print(f"\n{Fore.RED}ERRORES ENCONTRADOS:{Style.RESET_ALL}")
+            print(f"\nERRORES ENCONTRADOS:")
             for error in informacion.errores:
                 print(f"   • {error}")
         
-        print(f"\n{Fore.MAGENTA}{'='*80}{Style.RESET_ALL}")
-        print(f"{Fore.CYAN}Consulta realizada: {informacion.timestamp.strftime('%Y-%m-%d %H:%M:%S')}{Style.RESET_ALL}")
+        print(f"\n{'='*80}")
+        print(f"Consulta realizada: {informacion.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
     
     def verificar_estado_apis(self):
         """
         Verifica el estado de conexión de todas las APIs
         Útil para diagnóstico
         """
-        print(f"\n{Fore.CYAN}VERIFICANDO ESTADO DE LAS APIs...{Style.RESET_ALL}")
+        print(f"\nVERIFICANDO ESTADO DE LAS APIs...")
         print("-" * 50)
         
         # Mostrar configuración
         Config.mostrar_configuracion()
         
-        print(f"\n{Fore.CYAN}Estado de conexiones:{Style.RESET_ALL}")
+        print(f"\nEstado de conexiones:")
         
         # Verificar cada API
         apis = [
-            ("Clima (OpenWeatherMap)", self.clima_provider.verificar_conexion()),
-            ("Noticias (NewsAPI)", self.noticias_provider.verificar_conexion()),
+            ("Clima (Open-Meteo)", self.clima_provider.verificar_conexion()),
+            ("Noticias (FreeNewsAPI)", self.noticias_provider.verificar_conexion()),
             ("Países (REST Countries)", self.pais_provider.verificar_conexion())
         ]
         
         for nombre, estado in apis:
             icono = "[OK]" if estado else "[ERROR]"
-            color = Fore.GREEN if estado else Fore.RED
-            print(f"   {icono} {color}{nombre}: {'Disponible' if estado else 'No disponible'}{Style.RESET_ALL}")
+            print(f"   {icono} {nombre}: {'Disponible' if estado else 'No disponible'}")
     
     def obtener_solo_clima(self, ciudad: str) -> Optional:
         """Método de conveniencia para obtener solo información climática"""
         return self.clima_provider.obtener_clima(ciudad)
     
-    def obtener_solo_noticias(self, ciudad: str, pais: str = None) -> Optional:
+    def obtener_solo_noticias(self, pais: str) -> Optional:
         """Método de conveniencia para obtener solo noticias"""
-        if not pais:
-            pais = self.pais_provider.obtener_pais_por_ciudad(ciudad)
-        return self.noticias_provider.obtener_noticias(ciudad, pais)
+        return self.noticias_provider.obtener_noticias(pais)
     
     def obtener_solo_pais(self, pais: str) -> Optional:
         """Método de conveniencia para obtener solo información del país"""

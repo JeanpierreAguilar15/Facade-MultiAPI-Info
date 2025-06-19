@@ -1,133 +1,94 @@
 """
-Proveedor para obtener noticias de NewsAPI
+Proveedor para obtener noticias de Hacker News API (completamente gratuita)
 """
 import requests
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from ..models.informacion_models import InformacionNoticias, Noticia
 from ..utils.config import Config
 from ..utils.mock_data import MockDataProvider
 
 
 class NoticiasProvider:
-    """Proveedor de noticias"""
+    """Proveedor de noticias usando Hacker News API (completamente gratuita)"""
     
     def __init__(self):
-        self.api_key = Config.NEWS_API_KEY
-        self.base_url = Config.NEWS_API_BASE_URL
+        self.base_url = "https://hacker-news.firebaseio.com/v0"
         self.timeout = Config.REQUEST_TIMEOUT
         
-    def obtener_noticias(self, ciudad: str, pais: str = "España") -> Optional[InformacionNoticias]:
+    def obtener_noticias(self, pais: str) -> Optional[InformacionNoticias]:
         """
-        Obtiene noticias relacionadas con una ciudad/país
+        Obtiene noticias de Hacker News API
         
         Args:
-            ciudad: Nombre de la ciudad
-            pais: Nombre del país
+            pais: Código del país (se usa para personalizar el tipo de noticias)
             
         Returns:
-            InformacionNoticias o None si hay error
+            InformacionNoticias con las noticias obtenidas o None si falla
         """
-        # Si está configurado para usar mock o no hay API key, usar simulación
-        if Config.USE_MOCK_DATA or not self.api_key:
-            print(f"🎭 Usando noticias simuladas para {pais}")
-            return self._procesar_respuesta_noticias(
-                MockDataProvider.get_noticias_mock(pais), pais
-            )
-        
         try:
-            # Intentar obtener noticias reales
-            print(f"📰 Consultando noticias reales de {pais}...")
-            respuesta = self._hacer_peticion_noticias(ciudad, pais)
+            print(f"Obteniendo noticias reales de Hacker News...")
             
-            if respuesta:
-                return self._procesar_respuesta_noticias(respuesta, pais)
-            else:
-                # Fallback a datos simulados
-                if Config.ENABLE_FALLBACK:
-                    print(f"⚠️  API de noticias falló, usando datos simulados para {pais}")
-                    return self._procesar_respuesta_noticias(
-                        MockDataProvider.get_noticias_mock(pais), pais
+            # Obtener las mejores historias
+            top_stories_url = f"{self.base_url}/topstories.json"
+            response = requests.get(top_stories_url, timeout=self.timeout)
+            response.raise_for_status()
+            
+            story_ids = response.json()[:10]  # Obtener las primeras 10 historias
+            
+            noticias = []
+            for story_id in story_ids:
+                try:
+                    # Obtener detalles de cada historia
+                    story_url = f"{self.base_url}/item/{story_id}.json"
+                    story_response = requests.get(story_url, timeout=self.timeout)
+                    story_response.raise_for_status()
+                    
+                    story_data = story_response.json()
+                    
+                    # Verificar que la historia tenga los campos necesarios
+                    if not story_data or story_data.get('type') != 'story':
+                        continue
+                        
+                    # Crear objeto Noticia
+                    noticia = Noticia(
+                        titulo=story_data.get('title', 'Sin título'),
+                        descripcion=story_data.get('text', 'Historia de Hacker News')[:200] + "..." if story_data.get('text') else f"Historia sobre tecnología y startup - {story_data.get('score', 0)} puntos",
+                        url=story_data.get('url', f"https://news.ycombinator.com/item?id={story_id}"),
+                        fuente="Hacker News",
+                        fecha_publicacion=str(story_data.get('time', ''))
                     )
+                    noticias.append(noticia)
+                    
+                except Exception as e:
+                    print(f"Error obteniendo historia {story_id}: {e}")
+                    continue
+            
+            if noticias:
+                print(f"[OK] Noticias obtenidas: {len(noticias)} artículos de Hacker News")
+                return InformacionNoticias(
+                    pais=pais,
+                    total_resultados=len(noticias),
+                    noticias=noticias,
+                    fuente_api="Hacker News API"
+                )
+            else:
+                raise Exception("No se pudieron obtener noticias")
                 
         except Exception as e:
-            print(f"❌ Error obteniendo noticias: {str(e)}")
-            
-            # Fallback a datos simulados
-            if Config.ENABLE_FALLBACK:
-                print(f"🎭 Usando noticias simuladas como fallback para {pais}")
-                return self._procesar_respuesta_noticias(
-                    MockDataProvider.get_noticias_mock(pais), pais
-                )
-        
-        return None
+            print(f"[ERROR] Error obteniendo noticias de Hacker News: {e}")
+            return self._usar_datos_simulados(pais)
     
-    def _hacer_peticion_noticias(self, ciudad: str, pais: str) -> Optional[dict]:
-        """Hace la petición HTTP a la API de noticias"""
-        # Buscar noticias por ciudad y país
-        query = f"{ciudad} OR {pais}"
-        
-        parametros = {
-            'q': query,
-            'language': Config.DEFAULT_LANGUAGE,
-            'sortBy': 'publishedAt',
-            'pageSize': 5  # Limitar a 5 noticias
-        }
-        
-        headers = {
-            'X-API-Key': self.api_key
-        }
-        
-        respuesta = requests.get(
-            self.base_url,
-            params=parametros,
-            headers=headers,
-            timeout=self.timeout
-        )
-        
-        if respuesta.status_code == 200:
-            return respuesta.json()
-        else:
-            print(f"❌ Error API noticias: {respuesta.status_code} - {respuesta.text}")
-            return None
-    
-    def _procesar_respuesta_noticias(self, data: dict, pais: str) -> InformacionNoticias:
-        """Procesa la respuesta de la API y crea el objeto InformacionNoticias"""
-        try:
-            noticias_lista = []
-            
-            for articulo in data.get('articles', [])[:5]:  # Máximo 5 noticias
-                if articulo.get('title') and articulo.get('description'):
-                    noticia = Noticia(
-                        titulo=articulo['title'],
-                        descripcion=articulo['description'] or "Sin descripción disponible",
-                        url=articulo.get('url', ''),
-                        fuente=articulo.get('source', {}).get('name', 'Fuente desconocida'),
-                        fecha_publicacion=articulo.get('publishedAt'),
-                        imagen_url=articulo.get('urlToImage')
-                    )
-                    noticias_lista.append(noticia)
-            
-            return InformacionNoticias(
-                noticias=noticias_lista,
-                total_resultados=len(noticias_lista),
-                pais_consultado=pais
-            )
-            
-        except Exception as e:
-            print(f"❌ Error procesando noticias: {str(e)}")
-            raise
-    
+    def _usar_datos_simulados(self, pais: str) -> InformacionNoticias:
+        """Fallback a datos simulados si la API falla"""
+        print("Usando noticias simuladas para", pais)
+        mock_provider = MockDataProvider()
+        return mock_provider.obtener_noticias_simuladas(pais)
+
     def verificar_conexion(self) -> bool:
         """Verifica si la API está disponible"""
-        if not self.api_key:
-            return False
-            
         try:
-            headers = {'X-API-Key': self.api_key}
             respuesta = requests.get(
-                self.base_url,
-                params={'q': 'test', 'pageSize': 1},
-                headers=headers,
+                f"{self.base_url}/topstories.json",
                 timeout=5
             )
             return respuesta.status_code == 200

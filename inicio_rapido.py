@@ -1,82 +1,147 @@
 #!/usr/bin/env python3
 """
-INICIO RÁPIDO - Patrón Facade
+INICIO RÁPIDO - Patrón Facade para Múltiples APIs
 
-Script para probar rápidamente el proyecto sin configuración adicional.
-Usa datos simulados para demostrar el patrón Facade inmediatamente.
+Este script demuestra el uso del patrón Facade para acceder
+a información de múltiples APIs de forma simplificada.
+
+APIs utilizadas (todas gratuitas):
+- Open-Meteo: Información climática
+- FreeNewsAPI: Noticias actuales
+- REST Countries: Información de países
 """
+
 import sys
 import os
 
-# Añadir el directorio actual al path
+# Agregar el directorio raíz al path para importar módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.facade.informacion_facade import FachadaInformacionCiudad
-from colorama import init, Fore, Style
-
-# Inicializar colorama
-init()
+from src.utils.config import Config
 
 
 def main():
-    """Demostración rápida del patrón Facade"""
-    print(f"{Fore.CYAN}PATRÓN FACADE - INICIO RÁPIDO{Style.RESET_ALL}")
-    print(f"{Fore.CYAN}Sistema de Información Multi-API{Style.RESET_ALL}")
+    """Función principal del script de demostración"""
+    print("=" * 80)
+    print("PATRÓN FACADE - DEMO DE MÚLTIPLES APIs")
+    print("=" * 80)
+    print()
+    print("Este proyecto demuestra el patrón Facade accediendo a:")
+    print("- Open-Meteo (clima) - Completamente gratuita")
+    print("- FreeNewsAPI (noticias) - Completamente gratuita") 
+    print("- REST Countries (países) - Completamente gratuita")
+    print()
+    print("VENTAJAS DEL PATRÓN FACADE:")
+    print("• Interfaz simplificada para múltiples sistemas complejos")
+    print("• El cliente no necesita conocer detalles de cada API")
+    print("• Manejo centralizado de errores y fallbacks")
+    print("• Fácil mantenimiento y extensión")
+    print()
+    
+    # Crear instancia de la fachada
+    print("Inicializando Facade...")
+    facade = FachadaInformacionCiudad()
+    
+    # Mostrar configuración actual
+    print("\n" + "=" * 60)
+    print("CONFIGURACIÓN DEL SISTEMA")
+    print("=" * 60)
+    facade.verificar_estado_apis()
+    
+    # Lista de ciudades para probar
+    ciudades_prueba = [
+        "Madrid",
+        "Londres", 
+        "Nueva York",
+        "París"
+    ]
+    
+    print("\n" + "=" * 60)
+    print("DEMOSTRACIONES")
     print("=" * 60)
     
-    print(f"\n{Fore.YELLOW}Este demo usa datos simulados para mostrar el patrón Facade{Style.RESET_ALL}")
-    print(f"{Fore.YELLOW}sin necesidad de configurar APIs reales.{Style.RESET_ALL}\n")
-    
-    try:
-        # Crear la fachada (interfaz unificada)
-        print(f"{Fore.BLUE}Inicializando Facade...{Style.RESET_ALL}")
-        facade = FachadaInformacionCiudad()
+    for i, ciudad in enumerate(ciudades_prueba, 1):
+        print(f"\n[DEMO {i}] Consultando información de {ciudad}")
+        print("-" * 50)
         
-        # Demostrar con diferentes ciudades
-        ciudades = ["Madrid", "Barcelona", "México"]
-        
-        for ciudad in ciudades:
-            print(f"\n{Fore.MAGENTA}{'='*60}{Style.RESET_ALL}")
-            print(f"{Fore.MAGENTA}CONSULTANDO: {ciudad.upper()}{Style.RESET_ALL}")
-            print(f"{Fore.MAGENTA}{'='*60}{Style.RESET_ALL}")
-            
-            # UNA SOLA LLAMADA obtiene información de múltiples "APIs"
+        try:
+            # Usar el Facade para obtener toda la información
             informacion = facade.obtener_informacion_completa(ciudad)
             
             # Mostrar resumen
             facade.mostrar_resumen(informacion)
             
-            if ciudad != ciudades[-1]:  # No pausar en la última ciudad
-                input(f"\n{Fore.GREEN}Presiona Enter para continuar con la siguiente ciudad...{Style.RESET_ALL}")
-        
-        # Mostrar diagnóstico
-        print(f"\n{Fore.CYAN}{'='*60}{Style.RESET_ALL}")
-        print(f"{Fore.CYAN}DIAGNÓSTICO DEL SISTEMA{Style.RESET_ALL}")
-        print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}")
-        facade.verificar_estado_apis()
-        
-        # Conclusión
-        print(f"\n{Fore.GREEN}{'='*60}{Style.RESET_ALL}")
-        print(f"{Fore.GREEN}¡DEMOSTRACIÓN COMPLETADA!{Style.RESET_ALL}")
-        print(f"{Fore.GREEN}{'='*60}{Style.RESET_ALL}")
-        
-        print(f"\n{Fore.YELLOW}Beneficios del Patrón Facade demostrados:{Style.RESET_ALL}")
-        print("   • Una sola interfaz para múltiples APIs complejas")
-        print("   • Cliente desacoplado de detalles de implementación")
-        print("   • Manejo centralizado de errores y fallbacks")
-        print("   • Código limpio y fácil de mantener")
-        
-        print(f"\n{Fore.CYAN}Para explorar más:{Style.RESET_ALL}")
-        print("   • Ejecuta: python ejemplos/demo_completo.py")
-        print("   • Ejecuta: python ejemplos/demo_individual.py")
-        print("   • Ejecuta: python tests/test_facade.py")
-        print("   • Configura APIs reales en .env (opcional)")
-        
-    except Exception as e:
-        print(f"{Fore.RED}Error: {str(e)}{Style.RESET_ALL}")
-        import traceback
-        traceback.print_exc()
+            # Pausa entre consultas
+            if i < len(ciudades_prueba):
+                input("\nPresiona Enter para continuar con la siguiente ciudad...")
+                
+        except Exception as e:
+            print(f"Error en la demostración: {str(e)}")
+            continue
+    
+    print("\n" + "=" * 80)
+    print("DEMO COMPLETADA")
+    print("=" * 80)
+    print()
+    print("BENEFICIOS OBSERVADOS:")
+    print("• Una sola llamada obtiene información de múltiples fuentes")
+    print("• Manejo automático de errores y fallbacks")
+    print("• Interfaz consistente independientemente de las APIs subyacentes")
+    print("• Fácil extensión para agregar nuevas fuentes de datos")
+    print()
+    print("El patrón Facade simplifica significativamente el acceso")
+    print("a sistemas complejos y heterogéneos.")
+    print()
+
+
+def demo_individual():
+    """Demostración de métodos individuales del Facade"""
+    print("\n" + "=" * 60)
+    print("DEMO DE MÉTODOS INDIVIDUALES")
+    print("=" * 60)
+    
+    facade = FachadaInformacionCiudad()
+    ciudad = "Barcelona"
+    
+    print(f"\nConsultando información individual de {ciudad}:")
+    
+    # Solo clima
+    print(f"\n1. Solo clima:")
+    clima = facade.obtener_solo_clima(ciudad)
+    if clima:
+        print(f"   Temperatura: {clima.temperatura}°C")
+        print(f"   Condición: {clima.descripcion}")
+    
+    # Solo noticias (por país)
+    print(f"\n2. Solo noticias de España:")
+    noticias = facade.obtener_solo_noticias("España")
+    if noticias and noticias.noticias:
+        print(f"   Encontradas: {len(noticias.noticias)} noticias")
+        print(f"   Primera: {noticias.noticias[0].titulo[:60]}...")
+    
+    # Solo país
+    print(f"\n3. Solo información del país:")
+    pais = facade.obtener_solo_pais("España")
+    if pais:
+        print(f"   País: {pais.nombre_comun}")
+        print(f"   Capital: {', '.join(pais.capital)}")
+        print(f"   Población: {pais.poblacion:,}")
 
 
 if __name__ == "__main__":
-    main() 
+    try:
+        main()
+        
+        # Preguntar si quiere ver demo individual
+        respuesta = input("\n¿Quieres ver la demo de métodos individuales? (s/n): ")
+        if respuesta.lower() in ['s', 'si', 'sí', 'y', 'yes']:
+            demo_individual()
+            
+    except KeyboardInterrupt:
+        print("\n\nDemo interrumpida por el usuario.")
+    except Exception as e:
+        print(f"\nError inesperado: {str(e)}")
+        print("Revisa la configuración y las dependencias.")
+    
+    print("\nGracias por probar el patrón Facade!") 
