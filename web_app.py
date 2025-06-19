@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🌐 APLICACIÓN WEB - Patrón Facade
+APLICACIÓN WEB - Patrón Facade
 
 Aplicación Flask que demuestra el patrón Facade mediante una interfaz web moderna.
 Permite consultar información de ciudades usando múltiples APIs de forma unificada.
@@ -47,9 +47,9 @@ def consultar_ciudad():
                 'error': 'Por favor ingresa el nombre de una ciudad'
             }), 400
         
-        print(f"🔍 Consultando información de: {ciudad}")
+        print(f"Consultando información de: {ciudad}")
         
-        # 🏛️ AQUÍ ES DONDE SE USA EL PATRÓN FACADE
+        # AQUÍ ES DONDE SE USA EL PATRÓN FACADE
         # Una sola llamada obtiene información de múltiples APIs
         informacion = facade.obtener_informacion_completa(ciudad)
         
@@ -114,7 +114,7 @@ def consultar_ciudad():
         return jsonify(resultado)
         
     except Exception as e:
-        print(f"❌ Error en consulta: {str(e)}")
+        print(f"Error en consulta: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Error interno: {str(e)}'
@@ -193,9 +193,9 @@ def facade_info():
 
 
 if __name__ == '__main__':
-    print("🌐 Iniciando aplicación web del patrón Facade...")
-    print("📱 Accede a: http://localhost:5000")
-    print("🏛️ Demostrando el patrón Facade con interfaz web moderna")
+    print("Iniciando aplicación web del patrón Facade...")
+    print("Accede a: http://localhost:5000")
+    print("Demostrando el patrón Facade con interfaz web moderna")
     
     # Configurar para desarrollo
     app.run(

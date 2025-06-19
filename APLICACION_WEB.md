@@ -1,6 +1,6 @@
-# 🌐 Aplicación Web - Patrón Facade
+# Aplicación Web - Patrón Facade
 
-## 🚀 Cómo ejecutar la aplicación web
+## Cómo ejecutar la aplicación web
 
 ### 1. Instalar dependencias adicionales:
 ```bash
@@ -17,40 +17,40 @@ python web_app.py
 http://localhost:5000
 ```
 
-## 🎯 Características de la aplicación web
+## Características de la aplicación web
 
-### ✨ Interfaz moderna:
+### Interfaz moderna:
 - **Diseño responsivo** con Bootstrap 5
 - **Animaciones suaves** y efectos visuales
 - **Iconos intuitivos** con Font Awesome
 - **Gradientes atractivos** y colores modernos
 
-### 🏛️ Demostración del patrón Facade:
+### Demostración del patrón Facade:
 - **Una sola interfaz** para consultar múltiples APIs
 - **Visualización clara** de los resultados de cada API
 - **Explicación educativa** del patrón incluida
 - **Comparación visual** entre usar y no usar Facade
 
-### 📊 Funcionalidades:
+### Funcionalidades:
 
-#### 🔍 **Consulta de ciudades**:
+#### **Consulta de ciudades**:
 - Campo de búsqueda intuitivo
 - Botón para consultar información completa
 - Loading spinner durante la consulta
 - Resultados organizados en tarjetas
 
-#### 📈 **Resultados visuales**:
+#### **Resultados visuales**:
 - **Clima**: Temperatura, descripción, humedad
 - **Noticias**: Títulos recientes con fuentes
 - **País**: Bandera, población, capital, idiomas
 - **Información del Facade**: Qué APIs se consultaron
 
-#### 🔧 **Diagnóstico del sistema**:
+#### **Diagnóstico del sistema**:
 - Estado de cada API (online/offline)
 - Configuración actual del sistema
 - Indicadores visuales de estado
 
-## 🎨 Estructura de la aplicación
+## Estructura de la aplicación
 
 ```
 web_app.py              # Aplicación Flask principal
@@ -58,7 +58,7 @@ templates/
 └── index.html          # Interfaz web moderna
 ```
 
-## 🔗 Endpoints de la API
+## Endpoints de la API
 
 ### `GET /`
 - **Descripción**: Página principal
@@ -77,7 +77,7 @@ templates/
 - **Descripción**: Información educativa sobre el patrón Facade
 - **Retorna**: Explicación, beneficios y ejemplos de uso
 
-## 🎓 Valor educativo
+## Valor educativo
 
 ### Para estudiantes:
 - **Visualización práctica** del patrón Facade
@@ -91,7 +91,7 @@ templates/
 - **Código bien documentado** y estructurado
 - **Ejemplo práctico** de arquitectura limpia
 
-## 🚀 Mejoras futuras posibles
+## Mejoras futuras posibles
 
 - [ ] **Modo dark/light**
 - [ ] **Historial de consultas**
@@ -102,7 +102,7 @@ templates/
 - [ ] **API rate limiting** y caching
 - [ ] **Autenticación** para APIs premium
 
-## 🎯 Demostración perfecta del Facade
+## Demostración perfecta del Facade
 
 La aplicación web demuestra **perfectamente** el patrón Facade porque:
 
@@ -112,4 +112,4 @@ La aplicación web demuestra **perfectamente** el patrón Facade porque:
 4. **Los errores** se manejan de forma centralizada
 5. **El fallback** funciona automáticamente si las APIs fallan
 
-¡Es la demostración visual perfecta de cómo Facade simplifica sistemas complejos! 🏛️✨ 
+¡Es la demostración visual perfecta de cómo Facade simplifica sistemas complejos! 

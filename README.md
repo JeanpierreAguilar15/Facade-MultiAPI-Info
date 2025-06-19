@@ -1,8 +1,8 @@
-# 🏛️ Patrón Facade - Sistema de Información Multi-API
+# Patrón Facade - Sistema de Información Multi-API
 
 Este proyecto demuestra la implementación del **Patrón de Diseño Facade** mediante un sistema que unifica el acceso a múltiples APIs de información.
 
-## 🎯 Problemática
+## Problemática
 
 Imagina que necesitas obtener información completa sobre una ciudad:
 - **Clima actual** (OpenWeatherMap API)
@@ -15,7 +15,7 @@ Cada API tiene:
 - Estructuras de respuesta diferentes
 - Manejo de errores específico
 
-## 🏗️ Solución con Facade
+## Solución con Facade
 
 La **FachadaInformacionCiudad** proporciona una interfaz unificada:
 
@@ -30,16 +30,16 @@ print(info.noticias[0].titulo)
 print(info.pais.poblacion)
 ```
 
-## 🔄 Características
+## Características
 
-- ✅ **APIs Reales**: Consume APIs de producción
-- ✅ **Fallback Inteligente**: Si falla una API, usa datos simulados
-- ✅ **Interfaz Unificada**: Una sola clase para todo
-- ✅ **Manejo de Errores**: Centralizado y consistente
-- ✅ **Configuración Flexible**: Variables de entorno para API keys
-- 🌐 **Aplicación Web**: Interfaz moderna con Flask para demostrar el patrón
+- **APIs Reales**: Consume APIs de producción
+- **Fallback Inteligente**: Si falla una API, usa datos simulados
+- **Interfaz Unificada**: Una sola clase para todo
+- **Manejo de Errores**: Centralizado y consistente
+- **Configuración Flexible**: Variables de entorno para API keys
+- **Aplicación Web**: Interfaz moderna con Flask para demostrar el patrón
 
-## 🚀 Instalación
+## Instalación
 
 ```bash
 # Clonar el repositorio
@@ -54,7 +54,7 @@ cp .env.example .env
 # Editar .env con tus API keys
 ```
 
-## 🎮 Uso
+## Uso
 
 ### Uso Básico
 ```python
@@ -70,49 +70,49 @@ facade.mostrar_resumen(info)
 python ejemplos/demo_completo.py
 ```
 
-### Aplicación Web (¡NUEVO! 🌐)
+### Aplicación Web
 ```bash
 pip install flask flask-cors
 python web_app.py
 # Abrir: http://localhost:5000
 ```
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Facade-MultiAPI-Info/
 ├── src/
 │   ├── facade/
-│   │   └── informacion_facade.py     # 🏛️ Clase principal Facade
+│   │   └── informacion_facade.py     # Clase principal Facade
 │   ├── providers/
-│   │   ├── clima_provider.py         # 🌤️ Proveedor de clima
-│   │   ├── noticias_provider.py      # 📰 Proveedor de noticias
-│   │   └── pais_provider.py          # 🌍 Proveedor de países
+│   │   ├── clima_provider.py         # Proveedor de clima
+│   │   ├── noticias_provider.py      # Proveedor de noticias
+│   │   └── pais_provider.py          # Proveedor de países
 │   ├── models/
-│   │   └── informacion_models.py     # 📊 Modelos de datos
+│   │   └── informacion_models.py     # Modelos de datos
 │   └── utils/
-│       ├── config.py                 # ⚙️ Configuración
-│       └── mock_data.py              # 🎭 Datos de simulación
+│       ├── config.py                 # Configuración
+│       └── mock_data.py              # Datos de simulación
 ├── ejemplos/
-│   ├── demo_completo.py              # 🎮 Demo principal
-│   └── demo_individual.py            # 🔧 Test de cada proveedor
+│   ├── demo_completo.py              # Demo principal
+│   └── demo_individual.py            # Test de cada proveedor
 ├── templates/
-│   └── index.html                    # 🌐 Interfaz web moderna
+│   └── index.html                    # Interfaz web moderna
 ├── tests/
-│   └── test_facade.py                # 🧪 Tests unitarios
-├── web_app.py                        # 🌐 Aplicación Flask
-├── inicio_rapido.py                  # 🚀 Demo rápido
-├── requirements.txt                  # 📦 Dependencias
-└── README.md                         # 📚 Documentación
+│   └── test_facade.py                # Tests unitarios
+├── web_app.py                        # Aplicación Flask
+├── inicio_rapido.py                  # Demo rápido
+├── requirements.txt                  # Dependencias
+└── README.md                         # Documentación
 ```
 
-## 🔑 APIs Utilizadas
+## APIs Utilizadas
 
 1. **OpenWeatherMap** - Información climática
 2. **NewsAPI** - Noticias por país/región  
 3. **REST Countries** - Datos de países
 
-## 🎨 Patrón Facade en Acción
+## Patrón Facade en Acción
 
 ### Sin Facade (Complejo)
 ```python
@@ -148,13 +148,13 @@ info = facade.obtener_informacion_completa("Madrid")
 # ¡Todo listo para usar!
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 python -m pytest tests/
 ```
 
-## 🤝 Contribuir
+## Contribuir
 
 1. Fork el proyecto
 2. Crea una rama para tu feature
@@ -162,6 +162,6 @@ python -m pytest tests/
 4. Push a la rama
 5. Abre un Pull Request
 
-## 📄 Licencia
+## Licencia
 
 MIT License - ver archivo LICENSE para detalles. 
